@@ -1,0 +1,8 @@
+extends layout
+
+block content
+  if (!user)
+    h1#title Welcome to SOCKS
+    p Not Logged in...
+        a(href="#") Home  
+  if (user)

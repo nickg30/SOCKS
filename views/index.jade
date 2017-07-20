@@ -1,0 +1,94 @@
+extends layout
+
+block content
+  if (!user)
+    h1#title Welcome to SOCKS
+    p Share ideas with friends
+  if (user)
+    div#welcome
+      h1 Welcome #{user.username}!
+          h4 This is your personal profile. The information on your timeline is a collaboration between you and your piers. Help expand your timeline by adding a message!
+          hr
+    div#wrapper
+      div#leftBox
+        img(src='/Images/#{user.username}.jpg',onerror="this.src='/Images/default.png'", height='200', width='200')
+        
+        // ------ Profile Image Uploader --------------------
+        .container
+          button.btn.btn-secondary(type='button', data-toggle='collapse', data-target='#demo') Change Profile Picture
+          #demo.collapse
+            form#frmUploader(enctype='multipart/form-data', action='api/Upload/', method='post')
+              input(type='file', name='imgUploader', multiple='', filename=user.username)
+              input#btnSubmit(type='submit', name='submit', value='Upload')
+            
+        // --------------------------------------------------
+        // Profile Information
+        h5 Name: #{user.name}
+        h5 Age: #{user.age}
+        h5 State: #{user.state}
+        h5 City: #{user.city}
+        h5 Email: #{user.email}
+        hr 
+        #accordion.panel-group
+          .panel.panel-default
+            .panel-heading
+              h4.panel-title
+                a(data-toggle='collapse', data-parent='#accordion', href='#collapse1') Text
+            #collapse1.panel-collapse.collapse
+              .panel-body
+                h3 Post text to your timeline
+                form(action="/textPost" method="POST" )
+                  input(type="text" value=user.name hidden=true name="author")
+                  input(type="text" value="" id="date" hidden=true name="date")
+                  input(type="text" placeholder="Post Title" name="title")
+                  br
+                  br
+                  textarea(type="text" rows="4" cols="44" placeholder="Text Post" name="textPost")
+                  br
+                  br
+                  input(type="date" name="eventDate")
+                  br
+                  br
+                  button(type="submit" onsubmit="setTimeout(function(){window.location.reload();},10)"
+            ) Post
+          .panel.panel-default
+            .panel-heading
+              h4.panel-title
+                a(data-toggle='collapse', data-parent='#accordion', href='#collapse2') Photo
+            #collapse2.panel-collapse.collapse
+              .panel-body
+                | Photo Uploader
+          .panel.panel-default
+            .panel-heading
+              h4.panel-title
+                a(data-toggle='collapse', data-parent='#accordion', href='#collapse3') Audio
+            #collapse3.panel-collapse.collapse
+              .panel-body
+                | Audio Uploader
+
+        
+      if(!post[0])
+        h2 Create your first text record!
+      if(post)
+        div#mainBox
+          div(style='display:inline-block;width:100%;overflow-y:auto;')
+            ul.timeline.timeline-horizontal
+              for posts in post
+                li.timeline-item
+                    .timeline-badge.primary
+                      i.glyphicon.glyphicon-pencil
+                    .timeline-panel
+                      .timeline-heading
+                        h4.timeline-title #{posts.title}
+                      .timeline-body
+                        p
+                          | #{posts.text}
+                        p
+                          small.text-muted
+                            i.glyphicon.glyphicon-time 
+                            |  #{posts.eventDate}
+              
+
+      
+    script(src="/js/test.js")
+    
